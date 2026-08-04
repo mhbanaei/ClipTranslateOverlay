@@ -20,3 +20,14 @@ A Python-based desktop utility that monitors your clipboard for image content an
 
 ```bash
 pip install wxPython pillow keyboard
+```
+
+```
+py -m pip install wxPython
+py -m pip install pillow
+py -m pip install keyboard
+```
+
+##	Credits
+
+- Erfan Shariat / Hossein Banaei=
