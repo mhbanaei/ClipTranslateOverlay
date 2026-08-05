@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClipTranslate Overlay — UI Preview</title>
+<style>
+  :root{
+    --bg:#17181d; --panel:#23252e; --card:#1e2028; --border:#2e313d;
+    --accent:#4f8cff; --accent-d:#3a6fd8; --text:#e8eaf2; --muted:#9aa1b5;
+    --success:#34c98e; --danger:#ff5d6c; --warn:#ffb84d;
+    --shadow:0 18px 50px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:"Segoe UI","Tahoma",sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(1100px 600px at 85% -10%, rgba(79,140,255,.16), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(52,201,142,.08), transparent 55%),
+      var(--bg);
+    overflow:hidden;
+    user-select:none;
+  }
+  /* ---------- stage ---------- */
+  #stage{position:fixed; inset:0; overflow:hidden;}
+  /* fake desktop windows behind */
+  .deco{
+    position:absolute; border:1px solid rgba(255,255,255,.06); border-radius:12px;
+    background:rgba(30,32,40,.7);
+  }
+  .deco .bar{height:26px; border-bottom:1px solid rgba(255,255,255,.05); display:flex; align-items:center; gap:6px; padding:0 10px;}
+  .deco .dot{width:9px;height:9px;border-radius:50%;}
+  .deco .lines{padding:12px; display:grid; gap:7px;}
+  .deco .line{height:7px;border-radius:4px;background:rgba(255,255,255,.07);}
+
+  /* ---------- toolbar ---------- */
+  #toolbar{
+    position:absolute; top:14px; right:50%; transform:translateX(50%);
+    display:flex; gap:8px; align-items:center; z-index:40;
+    background:rgba(35,37,46,.85); backdrop-filter:blur(8px);
+    border:1px solid var(--border); border-radius:14px; padding:8px 10px;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
+  }
+  #toolbar .brand{display:flex; align-items:center; gap:8px; padding:0 6px 0 2px;}
+  .logo{
+    width:28px;height:28px;border-radius:7px; background:var(--accent);
+    display:grid; place-items:center; color:#fff; font-weight:700; font-size:12px;
+  }
+  #toolbar .brand b{font-size:12.5px;}
+  .btn{
+    border:none; cursor:pointer; font-family:inherit; font-size:12.5px; color:#fff;
+    border-radius:999px; padding:8px 14px; transition:transform .12s, filter .12s, background .15s;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn.primary{background:var(--accent);}
+  .btn.primary:hover{background:var(--accent-d);}
+  .btn.ghost{background:var(--card); color:var(--muted); border:1px solid var(--border);}
+  .btn.ghost:hover{background:var(--panel); color:var(--text);}
+  .btn.danger{background:var(--danger);}
+  .btn.danger:hover{filter:brightness(1.1);}
+  kbd{
+    background:#0f1014; border:1px solid var(--border); border-bottom-width:2px;
+    border-radius:5px; padding:1px 7px; font-size:11px; font-family:"Consolas",monospace; color:var(--muted);
+  }
+  /* hotkey pill */
+  #hotkeyPill{
+    display:inline-flex; align-items:center; gap:8px; direction:ltr;
+    background:#0f1014; border:1px solid var(--border); border-radius:999px;
+    padding:7px 14px; font-size:12px; cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  #hotkeyPill:hover{border-color:var(--accent);}
+  #hotkeyPill.recording{border-color:var(--warn); color:var(--warn); animation:pulse 1s infinite;}
+  @keyframes pulse{50%{opacity:.55;}}
+
+  /* ---------- overlay mock ---------- */
+  #overlay{
+    position:absolute; top:120px; right:50%; transform:translateX(50%);
+    width:440px; min-height:300px; z-index:30;
+    background:var(--bg); border-radius:16px; border:1px solid var(--border);
+    box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column;
+    cursor:grab;
+  }
+  #overlay.dragging{cursor:grabbing; box-shadow:0 24px 70px rgba(0,0,0,.65);}
+  #overlay.hidden{display:none;}
+  .head{
+    height:46px; background:var(--panel); display:flex; align-items:center; gap:10px;
+    padding:0 12px; flex:0 0 auto;
+  }
+  .head .logo{width:24px;height:24px;border-radius:6px;font-size:10px;}
+  .head b{font-size:12.5px;}
+  #stateLbl{flex:1; text-align:left; font-size:11.5px; color:var(--warn); overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+  #stateLbl.ok{color:var(--success);}
+  #stateLbl.err{color:var(--danger);}
+  .iconbtn{
+    width:30px;height:30px;border-radius:999px;border:none;cursor:pointer;font-size:12px;
+    display:grid;place-items:center;transition:background .15s, transform .1s; color:var(--muted);
+  }
+  .iconbtn:hover{background:rgba(255,255,255,.08); color:var(--text);}
+  .iconbtn.danger:hover{background:var(--danger); color:#fff;}
+  .iconbtn:active{transform:scale(.92);}
+  .body{
+    flex:1; background:var(--card); display:grid; place-items:center; padding:18px;
+    min-height:180px; position:relative;
+  }
+  #resultImg{max-width:100%; max-height:240px; border-radius:8px; display:none; box-shadow:0 6px 20px rgba(0,0,0,.35);}
+  .spinner{
+    width:34px;height:34px;border-radius:50%;
+    border:3px solid rgba(79,140,255,.2); border-top-color:var(--accent);
+    animation:spin .9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  #bodyMsg{display:none; flex-direction:column; align-items:center; gap:14px; color:var(--muted); font-size:13px;}
+  #errMsg{color:var(--danger); font-size:13px; text-align:center; line-height:1.9;}
+  .foot{
+    height:34px; background:var(--panel); display:flex; align-items:center;
+    padding:0 14px; gap:12px; font-size:10.5px; color:var(--muted); flex:0 0 auto;
+  }
+  .foot .path{flex:1; text-align:left; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; direction:ltr;}
+
+  /* ---------- settings dialog ---------- */
+  #modal{position:fixed; inset:0; z-index:60; display:none; align-items:center; justify-content:center; background:rgba(10,11,14,.6); backdrop-filter:blur(3px);}
+  #modal.open{display:flex;}
+  .dialog{
+    width:460px; max-height:92vh; overflow:auto; background:var(--bg); border-radius:16px;
+    border:1px solid var(--border); box-shadow:var(--shadow);
+  }
+  .d-head{height:64px; background:var(--panel); display:flex; align-items:center; gap:12px; padding:0 18px; border-radius:16px 16px 0 0;}
+  .d-head b{font-size:15px;}
+  .d-body{padding:6px 22px 18px; display:grid; gap:2px;}
+  .sec{color:var(--accent); font-size:11.5px; font-weight:700; margin-top:18px;}
+  .row{display:flex; align-items:center; gap:10px; margin-top:9px; font-size:12.5px;}
+  .row label{color:var(--muted); white-space:nowrap;}
+  .pill-btn{
+    background:var(--card); border:1px solid var(--border); color:var(--text);
+    border-radius:999px; padding:8px 18px; font-size:12.5px; cursor:pointer; transition:border-color .15s;
+  }
+  .pill-btn:hover{border-color:var(--accent);}
+  .pill-btn.rec{border-color:var(--warn); color:var(--warn);}
+  select, input[type=number]{
+    background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:9px;
+    padding:8px 10px; font-size:12.5px; font-family:inherit; outline:none;
+  }
+  select:focus, input:focus{border-color:var(--accent);}
+  .field{flex:1; display:flex; align-items:center; gap:8px;}
+  .path-box{
+    flex:1; background:var(--card); border:1px solid var(--border); border-radius:9px;
+    padding:8px 10px; font-size:11px; color:var(--muted); direction:ltr; text-align:left;
+    overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  }
+  .check{display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px;}
+  .check input{accent-color:var(--accent); width:15px; height:15px;}
+  .d-foot{display:flex; justify-content:flex-end; gap:10px; padding:16px 22px; border-top:1px solid rgba(255,255,255,.05);}
+
+  /* ---------- toast ---------- */
+  #toast{
+    position:fixed; bottom:24px; right:50%; transform:translateX(50%) translateY(80px);
+    background:var(--panel); border:1px solid var(--border); border-radius:12px;
+    padding:10px 18px; font-size:12.5px; z-index:80; opacity:0; transition:all .3s cubic-bezier(.2,.9,.3,1.2);
+    box-shadow:var(--shadow);
+  }
+  #toast.show{opacity:1; transform:translateX(50%) translateY(0);}
+  #toast.success{border-color:var(--success); color:var(--success);}
+  #toast.error{border-color:var(--danger); color:var(--danger);}
+
+  /* fake tray icon bottom-left */
+  #tray{
+    position:fixed; bottom:18px; left:18px; width:26px;height:26px;border-radius:7px;
+    background:var(--accent); display:grid; place-items:center; color:#fff; font-size:10px;
+    box-shadow:0 6px 16px rgba(0,0,0,.5); cursor:pointer; z-index:50;
+  }
+  #tray:hover{background:var(--accent-d);}
+  #trayMenu{
+    position:fixed; bottom:50px; left:18px; z-index:55; display:none; min-width:210px;
+    background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:6px; box-shadow:var(--shadow);
+  }
+  #trayMenu.open{display:block;}
+  #trayMenu div{padding:9px 12px; font-size:12.5px; border-radius:8px; cursor:pointer;}
+  #trayMenu div:hover{background:rgba(255,255,255,.07);}
+  #trayMenu hr{border:none; border-top:1px solid rgba(255,255,255,.07); margin:5px 4px;}
+
+  .hint-bar{position:fixed; bottom:14px; right:50%; transform:translateX(50%); color:var(--muted); font-size:11px; z-index:40; text-align:center; line-height:1.8;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- fake windows -->
+  <div class="deco" style="width:260px;height:180px;top:60px;right:-40px;transform:rotate(2deg);">
+    <div class="bar"><span class="dot" style="background:#ff5d6c"></span><span class="dot" style="background:#ffb84d"></span><span class="dot" style="background:#34c98e"></span></div>
+    <div class="lines"><div class="line" style="width:70%"></div><div class="line" style="width:90%"></div><div class="line" style="width:55%"></div><div class="line" style="width:80%"></div></div>
+  </div>
+  <div class="deco" style="width:300px;height:210px;top:150px;left:-60px;transform:rotate(-2deg);">
+    <div class="bar"><span class="dot" style="background:#ff5d6c"></span><span class="dot" style="background:#ffb84d"></span><span class="dot" style="background:#34c98e"></span></div>
+    <div class="lines"><div class="line" style="width:60%"></div><div class="line" style="width:85%"></div><div class="line" style="width:40%"></div><div class="line" style="width:75%"></div><div class="line" style="width:65%"></div></div>
+  </div>
+
+  <!-- toolbar -->
+  <div id="toolbar">
+    <span class="brand"><span class="logo">A⇄ف</span><b>ClipTranslate</b></span>
+    <button class="btn primary" id="btnTranslate">🖼 شبیهسازی ترجمه</button>
+    <button class="btn ghost" id="btnError">نمایش خطا</button>
+    <button class="btn ghost" id="btnSettings">⚙ تنظیمات…</button>
+    <button class="btn ghost" id="btnCopy">📋 کپی</button>
+    <button class="btn danger" id="btnClose">✕ بستن</button>
+    <span id="hotkeyPill" title="برای تغییر کلیک کنید">F2</span>
+  </div>
+
+  <!-- overlay mock -->
+  <div id="overlay">
+    <div class="head">
+      <span class="logo">A⇄ف</span>
+      <b>ClipTranslate</b>
+      <span id="stateLbl">آماده</span>
+      <button class="iconbtn" id="copyBtn" title="کپی به کلیپبورد">📋</button>
+      <button class="iconbtn danger" id="closeBtn" title="بستن">✕</button>
+    </div>
+    <div class="body">
+      <canvas id="resultImg"></canvas>
+      <div id="bodyMsg">
+        <div class="spinner"></div>
+        <span id="bodyMsgText">در حال ترجمه…</span>
+      </div>
+    </div>
+    <div class="foot">
+      <span id="hintText">برای بستن: <kbd>F2</kbd> • جابهجایی با درگ</span>
+      <span class="path" id="pathText"></span>
+    </div>
+  </div>
+
+  <!-- settings dialog -->
+  <div id="modal">
+    <div class="dialog">
+      <div class="d-head"><span class="logo" style="width:26px;height:26px;border-radius:6px;">A⇄ف</span><b>تنظیمات ClipTranslate</b></div>
+      <div class="d-body">
+        <div class="sec">کلید میانبر بستن عکس</div>
+        <div class="row">
+          <span class="pill-btn" id="hotkeyRec" title="برای ضبط کلیک کنید">F2</span>
+          <span style="color:var(--muted)">برای تغییر کلیک کنید و کلید (یا ترکیب) جدید را بزنید</span>
+        </div>
+
+        <div class="sec">زبان مقصد ترجمه</div>
+        <div class="row">
+          <select id="langSel">
+            <option value="fa" selected>فارسی</option><option value="en">انگلیسی</option>
+            <option value="ar">عربی</option><option value="tr">ترکی استانبولی</option>
+            <option value="de">آلمانی</option><option value="fr">فرانسوی</option>
+            <option value="es">اسپانیایی</option><option value="ru">روسی</option>
+            <option value="it">ایتالیایی</option><option value="hi">هندی</option>
+            <option value="ur">اردو</option><option value="az">آذربایجانی</option>
+            <option value="zh-CN">چینی سادهشده</option><option value="ja">ژاپنی</option>
+            <option value="ko">کرهای</option>
+          </select>
+          <label>تشخیص خودکار زبان مبدأ</label>
+        </div>
+
+        <div class="sec">پوشهی ذخیرهی ترجمهها</div>
+        <div class="row">
+          <div class="field">
+            <span class="path-box" id="dirPath">C:\Users\Hossein\Pictures\ClipTranslate</span>
+            <button class="btn ghost" id="btnPickDir" style="padding:6px 12px;">انتخاب پوشه…</button>
+            <button class="btn ghost" id="btnOpenDir" style="padding:6px 12px;">باز کردن</button>
+          </div>
+        </div>
+
+        <div class="sec">بستن خودکار Overlay</div>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="autoChk" checked> بستن خودکار پس از</label>
+          <input type="number" id="autoSpin" value="60" min="5" max="600" style="width:76px;">
+          <label>ثانیه (۰ = خاموش)</label>
+        </div>
+
+        <div class="sec">اعلانها</div>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="notifChk" checked> نمایش اعلان هنگام آمادهشدن ترجمه</label>
+        </div>
+      </div>
+      <div class="d-foot">
+        <button class="btn primary" id="btnSave">ذخیره تنظیمات</button>
+        <button class="btn ghost" id="btnCancel">انصراف</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <div id="tray" title="ClipTranslate — منوی Tray">A⇄ف</div>
+  <div id="trayMenu">
+    <div data-act="settings">تنظیمات…</div>
+    <div data-act="file">ترجمه با فایل…</div>
+    <hr>
+    <div data-act="pause">توقف موقت پایش کلیپبورد</div>
+    <hr>
+    <div data-act="exit" style="color:var(--danger)">خروج</div>
+  </div>
+  <div class="hint-bar">نسخهی نمایشی رابط کاربری ClipTranslateOverlay — حالت واقعی: برنامهی دسکتاپ با WebView2 مخفی<br>دکمهی «شبیهسازی ترجمه» را بزنید یا کلید <kbd>F2</kbd> را فشار دهید</div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const overlay = $('#overlay'), stateLbl = $('#stateLbl'), bodyMsg = $('#bodyMsg'),
+      resultImg = $('#resultImg'), pathText = $('#pathText'), hintText = $('#hintText'),
+      hotkeyPill = $('#hotkeyPill'), hotkeyRec = $('#hotkeyRec');
+let currentHotkey = 'f2';
+let translationTimer = null;
+
+/* ---------- toast ---------- */
+let toastTimer;
+function toast(msg, kind='') {
+  const t = $('#toast');
+  t.textContent = msg; t.className = 'show ' + kind;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = '', 2200);
+}
+
+/* ---------- draw demo images ---------- */
+function drawCanvas(img, text, sub, color) {
+  const c = document.createElement('canvas'); c.width = 640; c.height = 330;
+  const x = c.getContext('2d');
+  x.fillStyle = '#ffffff'; x.fillRect(0,0,c.width,c.height);
+  x.fillStyle = color || '#111418';
+  x.font = 'bold 44px "Segoe UI", Tahoma'; x.textAlign = 'center';
+  x.fillText(text, c.width/2, 130);
+  x.font = '28px "Segoe UI", Tahoma';
+  x.fillText(sub, c.width/2, 205);
+  x.fillStyle = '#9aa1b5'; x.font = '16px "Segoe UI"';
+  x.fillText('Sample — ClipTranslate', c.width/2, 262);
+  return c;
+}
+
+/* ---------- states ---------- */
+function setState(mode, msg, errMsg) {
+  stateLbl.className = '';
+  stateLbl.textContent = msg;
+  bodyMsg.style.display = 'flex';
+  resultImg.style.display = 'none';
+  if (mode === 'ok') { stateLbl.classList.add('ok'); bodyMsg.style.display='none'; }
+  if (mode === 'err') { stateLbl.classList.add('err'); }
+}
+function showResult() {
+  stateLbl.classList.add('ok');
+  stateLbl.textContent = 'ترجمه آماده است';
+  bodyMsg.style.display = 'none';
+  resultImg.style.display = 'block';
+  const lang = $('#langSel').value;
+  resultImg.getContext('2d').drawImage(drawCanvas(
+    resultImg, lang === 'fa' ? 'سلام دنیا' : 'Hello World',
+    lang === 'fa' ? 'این یک ترجمهی آزمایشی است' : 'This is a sample translation',
+    '#174f35'
+  ), 0, 0);
+  pathText.textContent = 'C:\\Users\\Hossein\\Pictures\\ClipTranslate\\translate_2026-08-05_19-15-03.png';
+}
+function simulateTranslate() {
+  if (translationTimer) clearTimeout(translationTimer);
+  overlay.classList.remove('hidden');
+  setState('work', 'در حال بارگذاری Google Translate…');
+  setTimeout(() => setState('work', 'در حال ترجمه توسط گوگل…'), 1100);
+  translationTimer = setTimeout(() => {
+    showResult();
+    toast('تصویر ترجمهشده در پوشه ذخیره شد ✓', 'success');
+  }, 2600);
+}
+function showError() {
+  if (translationTimer) clearTimeout(translationTimer);
+  overlay.classList.remove('hidden');
+  setState('err', 'خطا');
+  $('#bodyMsgText').textContent = 'ترجمه انجام نشد (زمانبندی گوگل طول کشید). دوباره تلاش کنید.';
+  bodyMsg.style.display = 'flex';
+  $('#bodyMsgText').style.color = 'var(--danger)';
+  pathText.textContent = '';
+  toast('ترجمه با خطا مواجه شد', 'error');
+}
+
+/* ---------- hotkey ---------- */
+function fmtHotkey(h) { return h.split('+').map(p => p.toUpperCase()).join(' + '); }
+function updateHotkeyUI() {
+  const label = fmtHotkey(currentHotkey);
+  hotkeyPill.textContent = label;
+  hotkeyRec.textContent = label;
+  hintText.innerHTML = 'برای بستن: <kbd>' + label + '</kbd> • جابهجایی با درگ';
+}
+let recording = false;
+function startRecording(elm) {
+  recording = true;
+  elm.classList.add('rec');
+  elm.textContent = '… کلید را بزنید';
+}
+function stopRecording(combo) {
+  recording = false;
+  hotkeyRec.classList.remove('rec');
+  hotkeyPill.classList.remove('rec');
+  if (combo) { currentHotkey = combo; updateHotkeyUI(); toast('کلید میانبر ذخیره شد: ' + fmtHotkey(combo), 'success'); }
+  else { hotkeyRec.textContent = fmtHotkey(currentHotkey); hotkeyPill.textContent = fmtHotkey(currentHotkey); }
+}
+document.addEventListener('keydown', e => {
+  const modNames = ['control', 'alt', 'shift', 'meta'];
+  if (recording) {
+    e.preventDefault();
+    const n = e.key.toLowerCase();
+    const norm = n.startsWith('arrow') ? n.replace('arrow', '') : n;
+    if (modNames.includes(norm)) return;          // فقط کلید اصلاحگر — منتظر کلید اصلی بمان
+    if (norm === 'escape') { stopRecording(null); return; }
+    const m = [];
+    if (e.ctrlKey) m.push('ctrl');
+    if (e.altKey) m.push('alt');
+    if (e.shiftKey) m.push('shift');
+    if (e.metaKey) m.push('windows');
+    const key = norm === ' ' ? 'space' : norm;
+    stopRecording(m.concat([key]).join('+'));
+    return;
+  }
+  // کلید میانبر واقعی → بستن Overlay
+  const pressed = [];
+  if (e.ctrlKey) pressed.push('ctrl'); if (e.altKey) pressed.push('alt');
+  if (e.shiftKey) pressed.push('shift'); if (e.metaKey) pressed.push('windows');
+  const n = e.key.toLowerCase().replace('arrow', '');
+  pressed.push(n === ' ' ? 'space' : n);
+  if (pressed.join('+') === currentHotkey && !overlay.classList.contains('hidden')) {
+    hideOverlay(); toast('Overlay بسته شد (' + fmtHotkey(currentHotkey) + ')');
+  }
+});
+hotkeyPill.addEventListener('click', () => startRecording(hotkeyPill));
+hotkeyRec.addEventListener('click', () => startRecording(hotkeyRec));
+hotkeyPill.addEventListener('keydown', e => { if (recording) e.stopPropagation(); });
+
+/* ---------- overlay actions ---------- */
+function hideOverlay() { overlay.classList.add('hidden'); clearTimeout(translationTimer); }
+$('#btnClose').onclick = hideOverlay;
+$('#closeBtn').onclick = hideOverlay;
+$('#btnTranslate').onclick = simulateTranslate;
+$('#btnError').onclick = showError;
+$('#btnCopy').onclick = () => { toast('تصویر ترجمهشده کپی شد ✓', 'success'); };
+$('#copyBtn').onclick = () => { toast('تصویر ترجمهشده کپی شد ✓', 'success'); };
+
+/* ---------- drag ---------- */
+(function drag(){
+  let dx=0, dy=0, on=false;
+  overlay.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    on = true; dx = e.clientX - overlay.offsetLeft; dy = e.clientY - overlay.offsetTop;
+    overlay.classList.add('dragging');
+  });
+  document.addEventListener('pointermove', e => {
+    if (!on) return;
+    const stage = $('#stage');
+    overlay.style.right = 'auto'; overlay.style.transform = 'none';
+    overlay.style.left = Math.min(Math.max(e.clientX - dx, -overlay.offsetWidth + 60), stage.clientWidth - 60) + 'px';
+    overlay.style.top = Math.min(Math.max(e.clientY - dy, 40), stage.clientHeight - 60) + 'px';
+  });
+  document.addEventListener('pointerup', () => { on = false; overlay.classList.remove('dragging'); });
+})();
+
+/* ---------- settings dialog ---------- */
+const modal = $('#modal');
+function openSettings() { modal.classList.add('open'); }
+function closeSettings() { modal.classList.remove('open'); }
+$('#btnSettings').onclick = openSettings;
+$('#btnCancel').onclick = closeSettings;
+$('#modal').addEventListener('click', e => { if (e.target === modal) closeSettings(); });
+$('#btnSave').onclick = () => {
+  updateHotkeyUI();
+  closeSettings();
+  toast('تنظیمات ذخیره شد ✓', 'success');
+};
+$('#btnPickDir').onclick = () => { toast('انتخاب پوشه (نمایشی)'); };
+$('#btnOpenDir').onclick = () => { toast('باز کردن پوشه (نمایشی)'); };
+$('#autoChk').addEventListener('change', e => { $('#autoSpin').disabled = !e.target.checked; });
+
+/* ---------- tray ---------- */
+$('#tray').addEventListener('click', e => { e.stopPropagation(); $('#trayMenu').classList.toggle('open'); });
+document.addEventListener('click', () => $('#trayMenu').classList.remove('open'));
+document.querySelectorAll('#trayMenu div').forEach(el => {
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    $('#trayMenu').classList.remove('open');
+    const act = el.dataset.act;
+    if (act === 'settings') openSettings();
+    else if (act === 'file') toast('انتخاب فایل برای ترجمه (نمایشی)');
+    else if (act === 'pause') toast('پایش کلیپبورد متوقف شد (نمایشی)');
+    else if (act === 'exit') toast('خروج از برنامه (نمایشی)');
+  });
+});
+
+/* ---------- init ---------- */
+resultImg.width = 640; resultImg.height = 330;
+updateHotkeyUI();
+</script>
+</body>
+</html>
