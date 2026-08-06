@@ -1,76 +1,60 @@
-# 📋 ClipTranslateOverlay
+<p align="center">
+  <img src="assets/42logo.png" alt="42LEVEL Logo" width="160" height="160" />
+</p>
 
-A Python-based desktop utility that monitors your clipboard for image content, translates it **in the background** using Google Translate's image translation, saves the translated image to a folder of your choice, and shows it as a floating always-on-top overlay.
+<h1 align="center">42 Level Translator</h1>
 
-## 🎨 42LEVEL Branding
+<p align="center">
+  <strong>ترجمه‌ی تصویر در پس‌زمینه + Overlay شناور + نمایش روی بازی‌ها</strong>
+</p>
 
-- **Icon**: the app keeps its original icon (rounded square with «A⇄ف»); the 42LEVEL logo (`assets/42logo.png`) is used inside the welcome popup and as the header icon of the result overlay
-- **Theme**: dark + red-neon style matching the logo (near-black background, neon-red accents, a red neon underline under the overlay header)
-- **Welcome popup**: on every startup a small popup appears at the top of the screen with the 42LEVEL logo and clickable links (support page, YouTube, GitHub ×2, Twitch) — it closes itself after 60 seconds or with the ✕ button
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python" />
+  <img src="https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Status-Stable-brightgreen?style=for-the-badge" />
+</p>
 
-| | |
-|---|---|
-| درگاه حمایت مالی | https://reymit.ir/42level |
-| کانال یوتیوب | https://www.youtube.com/@42LEVEL |
-| گیت‌هاب | https://github.com/mhbanaei |
-| گیت‌هاب | https://github.com/AghaErfan |
-| کانال توییچ | https://www.twitch.tv/42level |
+<p align="center">
+  <b>
+    <a href="#ویژگی‌ها">ویژگی‌ها</a> &nbsp;|&nbsp;
+    <a href="#نصب">نصب</a> &nbsp;|&nbsp;
+    <a href="#راهنمای-استفاده">راهنمای استفاده</a> &nbsp;|&nbsp;
+    <a href="#تنظیمات">تنظیمات</a> &nbsp;|&nbsp;
+    <a href="#تصاویر">تصاویر</a> &nbsp;|&nbsp;
+    <a href="#حمایت">حمایت</a>
+  </b>
+</p>
 
-## ✨ Features
+---
 
-- 🕶️ **Fully background operation** — the Google Translate window is never shown; everything happens in a hidden off-screen browser
-- 🖼️ Auto-detects images in clipboard (`PrintScreen`, `Win+Shift+S`, `Ctrl+C` on an image)
-- 📥 Saves the translated result into your chosen folder (default: `Pictures\ClipTranslate`)
-- 📌 Shows the result as a beautiful floating overlay (rounded corners, dark theme, draggable, position remembered between runs); small images are auto-zoomed so the copy/close buttons always stay visible
-- ⌨️ **Customizable hotkey** (default `F2`) to close the overlay — change it in settings (supports combos like `Ctrl+K`)
-- ⚙️ Full **settings UI**: hotkey, target language, save folder, auto-close timer, notifications
-- 🗂️ Tray menu: Settings / Translate a file… / Pause monitoring / Exit
-- 📋 One-click **copy** of the translated image back to the clipboard from the overlay (no re-translation loop)
-- 🔔 Optional system notification when the translation is ready
+## ✨ ویژگی‌ها
 
-## 🔧 Requirements
+- **ترجمه‌ی خودکار تصویر** از کلیپ‌بورد (PrintScreen / Win+Shift+S / Ctrl+C روی عکس)
+- **ابزار اسکرین‌شات داخلی** (مشابه Snipping Tool) با کلید **F3**
+- **منوی شیشه‌ای تسک‌بار** با طراحی مدرن و راست‌چین
+- **اجرای خودکار با شروع ویندوز**
+- **قابلیت زوم و پَن** روی تصویر ترجمه‌شده
+- **کپی سریع** تصویر ترجمه‌شده به کلیپ‌بورد
+- **نوتیفیکیشن‌های شیشه‌ای** پایین صفحه
 
-- Python 3.8+
-- Dependencies:
+---
+
+## 🚀 نصب
+
+### پیش‌نیازها
+- ویندوز ۱۰ یا ۱۱ (با WebView2 Runtime که اغلب از قبل نصب است)
+- Python 3.8 یا بالاتر
+
+### مراحل نصب
 
 ```bash
-pip install wxPython pillow keyboard
-```
+# کلون کردن ریپو
+git clone https://github.com/mhbanaei/42-Level-Translator.git
+cd 42-Level-Translator
 
-```
-py -m pip install wxPython
-py -m pip install pillow
-py -m pip install keyboard
-```
+# نصب وابستگی‌ها
+pip install -r requirements.txt
 
-- Microsoft Edge **WebView2 Runtime** (already installed on most Windows 10/11)
-
-## 🚀 Usage
-
-```bash
+# اجرا
 python ClipTranslateOverlay.py
-```
-
-- Copy a screenshot or image → the overlay appears with the translated image
-- Press **F2** (or your custom hotkey) to close the overlay
-- Right-click the tray icon for settings and options
-- Run `python ClipTranslateOverlay.py --selftest` to verify the whole translation pipeline without a clipboard image
-
-Settings are stored in `%APPDATA%\PantyOCR\config.json`.
-
-## 📦 Building the .exe
-
-Requires PyInstaller:
-
-```bash
-pip install pyinstaller
-python -m PyInstaller --noconfirm ClipTranslateOverlay.spec
-```
-
-The result is `dist\ClipTranslateOverlay.exe` (one-file, no console, 42 logo icon).
-
-> **Important**: the spec bundles `WebView2Loader.dll` (from your wxPython package) into the exe. Without it, the hidden Google Translate browser silently falls back to the old IE engine and the in-page translation stops working — do not build without that binary.
-
-## Credits
-
-- Erfan Shariat / Hossein Banaei
