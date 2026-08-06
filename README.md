@@ -5,7 +5,7 @@
 <h1 align="center">42 Level Translator</h1>
 
 <p align="center">
-  <strong>ترجمه‌ی تصویر در پس‌زمینه + Overlay شناور + نمایش روی بازی‌ها</strong>
+  <strong>ترجمه‌ی تصویر در پس‌زمینه  </strong>
 </p>
 
 <p align="center">
