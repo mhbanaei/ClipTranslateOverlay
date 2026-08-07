@@ -1,51 +1,79 @@
 <p align="center">
-  <img src="assets/banner.jpg" alt="Banner" style="width:100%; max-width:1200px; height:auto;">
-</p>
+  <img src="assets/banner.jpg" alt="ClipTranslateOverlay Banner" width="100%" style="max-width:1200px; border-radius:12px;">
 </p>
 
-<div align="center">
+<p align="center">
   <img src="https://img.shields.io/badge/42LEVEL-ClipTranslateOverlay-8A2BE2?style=for-the-badge&logo=github" alt="42LEVEL Badge"/>
-  <p>
-    <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"/>
-    <img src="https://img.shields.io/badge/Windows-10%2F11-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Windows"/>
-    <img src="https://img.shields.io/badge/WebView2-Ready-1E90FF?style=flat-square&logo=microsoftedge" alt="WebView2"/>
-  </p>
-  <p><strong>Background Clipboard Image Translator · مترجم تصویر کلیپ‌بورد در پس‌زمینه</strong></p>
-  </p>
-</div>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"/>
+  <img src="https://img.shields.io/badge/Windows-10%2F11-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Windows"/>
+  <img src="https://img.shields.io/badge/WebView2-Ready-1E90FF?style=flat-square&logo=microsoftedge" alt="WebView2"/>
+  <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status"/>
+</p>
+
+<h1 align="center"> 42level Translator </h1>
+
+<p align="center">
+  <strong>Background Clipboard Image Translator</strong><br>
+  <em>مترجم تصویر کلیپ‌بورد در پس‌زمینه</em>
+</p>
+
+<p align="center">
+  Instantly translate any image from your clipboard with a modern, glassy overlay — designed for gamers, researchers, and power users.
+</p>
 
 ---
 
 ## 📑 Table of Contents
-- [🚀 Features](#-features)
-- [📦 Installation](#-installation)
-- [📖 Detailed Usage & Hotkeys](#-detailed-usage--hotkeys)
-- [📁 Code Structure](#-code-structure)
-- [⚙️ Configuration](#️-configuration)
-- [🔧 Troubleshooting](#-troubleshooting)
+
+- [Features](#-features)
+- [Demo](#-demo)
+- [Installation](#-installation)
+- [Usage & Hotkeys](#-usage--hotkeys)
+- [Code Structure](#-code-structure)
+- [Configuration](#️-configuration)
+- [Troubleshooting](#-troubleshooting)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
 ## 🚀 Features
 
-- **Automatic image translation** – detects any image copied to the clipboard (`PrintScreen`, `Win+Shift+S`, or `Ctrl+C` on an image) and translates it instantly.
-- **Built‑in snipping tool** – press **F3** (customizable) to launch a screen capture tool without leaving your workflow.
-- **Glassy floating overlay** – displays the translated image with a modern acrylic design, supporting **zoom & pan**.
-- **Smart badge** – shows a discreet in‑game badge that auto‑hides after a few seconds.
-- **Process / Window manager** – select a specific game or window and capture it directly.
-- **Auto‑start with Windows** – optional, start the tool when your PC boots.
-- **Clean exit** – automatically wipes the temporary save folder on exit (optional, enabled by default).
-- **Full settings UI** – categorized into: Language, Hotkeys, Translation, Display, System, and Advanced.
+| Feature | Description |
+|---------|-------------|
+| **Automatic Image Translation** | Detects any image copied to the clipboard (`PrintScreen`, `Win+Shift+S`, or `Ctrl+C` on an image) and translates it instantly. |
+| **Built-in Snipping Tool** | Press **F3** (customizable) to capture any part of the screen without leaving your workflow. |
+| **Glassy Floating Overlay** | Displays the translated image with a modern acrylic design. Supports **zoom** and **pan**. |
+| **Smart Badge** | Shows a discreet in-game badge that auto-hides after a few seconds. |
+| **Process / Window Manager** | Select a specific game or window and capture it directly. |
+| **Auto-start with Windows** | Optional setting to launch the tool when your PC boots. |
+| **Clean Exit** | Automatically wipes the temporary save folder on exit (enabled by default). |
+| **Full Settings UI** | Categorized into: Language, Hotkeys, Translation, Display, System, and Advanced. |
+
+---
+
+## 🎥 Demo
+
+> Add your screenshots or GIFs here
+
+<p align="center">
+  <img src="assets/demo.gif" alt="Demo" width="80%">
+</p>
 
 ---
 
 ## 📦 Installation
 
 ### Prerequisites
-- **Windows 10 or 11** (with **WebView2 Runtime** – usually pre‑installed)
+
+- **Windows 10 or 11** (WebView2 Runtime is usually pre-installed)
 - **Python 3.8+**
 
-### Steps
+### Quick Start
+
 ```bash
 # 1. Clone the repository
 git clone https://github.com/mhbanaei/ClipTranslateOverlay.git
