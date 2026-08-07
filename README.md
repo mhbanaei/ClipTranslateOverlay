@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.png" alt="42LEVEL Logo" width="1237" height="437" />
+  <img src="assets/banner.jpg" alt="42LEVEL Logo" width="1237" height="437" />
 </p>
 
 <h1 align="center">42 Level Translator</h1>
