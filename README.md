@@ -13,7 +13,11 @@
   <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status"/>
 </p>
 
-<h1 align="center"> 42level Translator </h1>
+<p align="center">
+  <img src="assets/typing-demo.gif" alt="Typing Effect Demo" width="600">
+</p>
+
+<h1 align="center">ClipTranslateOverlay</h1>
 
 <p align="center">
   <strong>Background Clipboard Image Translator</strong><br>
@@ -23,21 +27,7 @@
 <p align="center">
   Instantly translate any image from your clipboard with a modern, glassy overlay — designed for gamers, researchers, and power users.
 </p>
-
----
-
-## 📑 Table of Contents
-
-- [Features](#-features)
-- [Demo](#-demo)
-- [Installation](#-installation)
-- [Usage & Hotkeys](#-usage--hotkeys)
-- [Code Structure](#-code-structure)
-- [Configuration](#️-configuration)
-- [Troubleshooting](#-troubleshooting)
-- [Contributing](#-contributing)
-- [License](#-license)
-
+- [بخش 
 ---
 
 ## 🚀 Features
@@ -56,8 +46,6 @@
 ---
 
 ## 🎥 Demo
-
-> Add your screenshots or GIFs here
 
 <p align="center">
   <img src="assets/demo.gif" alt="Demo" width="80%">
