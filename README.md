@@ -13,9 +13,6 @@
     <img src="https://img.shields.io/badge/Windows-10%2F11-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Windows"/>
     <img src="https://img.shields.io/badge/WebView2-Ready-1E90FF?style=flat-square&logo=microsoftedge" alt="WebView2"/>
   </p>
-  <p>
-    <a href="https://github.com/mhbanaei/ClipTranslateOverlay">📁 GitHub Repository</a>
-  </p>
 </div>
 
 ---
