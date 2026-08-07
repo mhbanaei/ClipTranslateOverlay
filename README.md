@@ -1,4 +1,6 @@
-![Banner](banner.jpg)
+<p align="center">
+  <img src="assest/banner.jpg" alt="Banner" width="100%">
+</p>
 
 <div align="center">
   <h1><strong>🖼️ ClipTranslateOverlay</strong></h1>
