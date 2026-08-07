@@ -33,13 +33,11 @@
 - **Automatic image translation** – detects any image copied to the clipboard (`PrintScreen`, `Win+Shift+S`, or `Ctrl+C` on an image) and translates it instantly.
 - **Built‑in snipping tool** – press **F3** (customizable) to launch a screen capture tool without leaving your workflow.
 - **Glassy floating overlay** – displays the translated image with a modern acrylic design, supporting **zoom & pan**.
-- **One‑click copy** – copy the translated image back to your clipboard with a single button.
 - **Smart badge** – shows a discreet in‑game badge that auto‑hides after a few seconds.
 - **Process / Window manager** – select a specific game or window and capture it directly.
 - **Auto‑start with Windows** – optional, start the tool when your PC boots.
 - **Clean exit** – automatically wipes the temporary save folder on exit (optional, enabled by default).
 - **Full settings UI** – categorized into: Language, Hotkeys, Translation, Display, System, and Advanced.
-- **Bilingual interface** – instantly switch between **Persian (RTL)** and **English (LTR)**.
 
 ---
 
