@@ -27,7 +27,6 @@
 <p align="center">
   Instantly translate any image from your clipboard with a modern, glassy overlay — designed for gamers, researchers, and power users.
 </p>
-- [بخش 
 ---
 
 ## 🚀 Features
