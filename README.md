@@ -17,7 +17,7 @@
   <img src="assets/typing-demo.gif" alt="Typing Effect Demo" width="600">
 </p>
 
-<h1 align="center">ClipTranslateOverlay</h1>
+<h1 align="center">42 Level Translator Overlay</h1>
 
 <p align="center">
   <strong>Background Clipboard Image Translator</strong><br>
@@ -71,3 +71,5 @@ pip install -r requirements.txt
 
 # 3. Run the application
 python ClipTranslateOverlay.py
+```
+###
