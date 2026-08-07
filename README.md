@@ -4,15 +4,13 @@
 </p>
 
 <div align="center">
-  <h1><strong>🖼️ ClipTranslateOverlay</strong></h1>
-  <p><strong>Background Clipboard Image Translator · مترجم تصویر کلیپ‌بورد در پس‌زمینه</strong></p>
-  <p>
-    <img src="https://img.shields.io/badge/42LEVEL-ClipTranslateOverlay-8A2BE2?style=for-the-badge&logo=github" alt="42LEVEL Badge"/>
-  </p>
+  <img src="https://img.shields.io/badge/42LEVEL-ClipTranslateOverlay-8A2BE2?style=for-the-badge&logo=github" alt="42LEVEL Badge"/>
   <p>
     <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"/>
     <img src="https://img.shields.io/badge/Windows-10%2F11-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Windows"/>
     <img src="https://img.shields.io/badge/WebView2-Ready-1E90FF?style=flat-square&logo=microsoftedge" alt="WebView2"/>
+  </p>
+  <p><strong>Background Clipboard Image Translator · مترجم تصویر کلیپ‌بورد در پس‌زمینه</strong></p>
   </p>
 </div>
 
