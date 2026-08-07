@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/42LEVEL-ClipTranslateOverlay-8A2BE2?style=for-the-badge&logo=github" alt="42LEVEL Badge"/>
+  <img src="https://img.shields.io/badge/42LEVEL-TranslateOverlay-8A2BE2?style=for-the-badge&logo=github" alt="42LEVEL Badge"/>
 </p>
 
 <p align="center">
